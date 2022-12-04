@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Rust: test build",
+			"command": "cargo",
+			"args": ["test"],
+			"problemMatcher": [
+				"$rustc"
+			]
+
+		},
+		{
+			"label": "Rust: debug build",
+			"command": "cargo",
+			"args": ["build"],
+			"problemMatcher": [
+				"$rustc"
+			]
+
+		},
+		{
+			"label": "Rust: release build",
+			"command": "cargo",
+			"args": ["build", "--release"],
+			"problemMatcher": [
+				"$rustc"
+			],
+
+		},
+		{
+			"label": "Rust: clean",
+			"command": "cargo",
+			"args": ["clean"],
+			"problemMatcher": [
+				"$rustc"
+			],
+
+		}
+	]
+}

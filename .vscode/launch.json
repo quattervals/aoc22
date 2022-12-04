@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Rust Debug",
+            "program": "target/debug/aoc_22",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "sourceLanguages": [
+                "rust"
+            ],
+            "preLaunchTask": "Rust: debug build"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests'",
+            "cargo": {
+                "args": [
+                    "test",
+                    // "--no-run",
+                    // "--bin my-project",
+                    // "--package my-project",
+                    // "--", // here I've added the arguments
+                    // "--test-threads=1", // here I've added the arguments
+                ]
+            }
+        }
+    ]
+}
