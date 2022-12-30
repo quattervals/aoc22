@@ -74,4 +74,15 @@ mod tests {
         assert_eq!(27, item_value('A'));
         assert_eq!(1, item_value('a'));
     }
+
+    #[test]
+    fn move_parts_of_vector_to_other_vector() {
+        let mut v_from = vec!["a", "b", "c"];
+        let mut v_to = vec!["x", "y", "z"];
+
+        v_to.append(&mut v_from.drain(1..).collect());
+
+        println!("now v_from {:?}", v_from);
+        println!("now v_to {:?}", v_to);
+    }
 }
