@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 pub fn day_1_greeter() {
     println! {"Day 1"};
 
