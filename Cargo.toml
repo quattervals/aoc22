@@ -9,6 +9,10 @@ edition = "2021"
 #[dependencies]
 #clap = { version = "3.2.20", features = ["derive"] }
 
+
+[dependencies]
+regex = "1"
+
 [profile.dev]
 opt-level = 0
 
