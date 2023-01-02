@@ -49,13 +49,24 @@ impl Dir {
         self.files.iter().map(|x| x.size).sum()
     }
 
-    fn size_of_subdirs(&self) -> u32 {
+    // fn size_of_dir_including_subdirs(&self) -> u32 {
+    //     let mut size_of_subdirs: u32 = 0;
+    //     for (key, subdir) in &self.sub_dirs {
+    //         size_of_subdirs += subdir.size_of_dir_including_subdirs();
+    //     }
+
+    //     return self.size_of_files_in_dir() + size_of_subdirs;
+    // }
+
+    fn record_size_of_dir_including_subdirs(&self, size_count: &mut HashMap<String, u32>) -> u32 {
         let mut size_of_subdirs: u32 = 0;
         for (key, subdir) in &self.sub_dirs {
-            size_of_subdirs += subdir.size_of_subdirs();
+            size_of_subdirs += subdir.record_size_of_dir_including_subdirs(size_count);
         }
 
-        return self.size_of_files_in_dir() + size_of_subdirs;
+        let size_of_dir = self.size_of_files_in_dir() + size_of_subdirs;
+        size_count.insert(String::from(&self.name), size_of_dir);
+        return size_of_dir;
     }
 }
 
@@ -106,8 +117,26 @@ mod tests {
         assert_eq!(34 + 44, dir.size_of_files_in_dir());
     }
 
+    // #[test]
+    // fn calc_size_of_subdirs() {
+    //     let mut dir = Dir::make_empty_dir("root");
+
+    //     dir.add_file("eins", 44);
+    //     dir.add_file("zwei", 34);
+    //     dir.add_dir("sub");
+    //     let subdir = dir.sub_dirs.get_mut("sub").unwrap();
+    //     subdir.add_file("sub_eins", 5);
+    //     subdir.add_file("sub_zwei", 7);
+    //     subdir.add_dir("subsub");
+    //     let subsubdir = subdir.sub_dirs.get_mut("subsub").unwrap();
+    //     subsubdir.add_file("subsub_eins", 3);
+    //     subsubdir.add_file("subsub_zwei", 8);
+
+    //     assert_eq!(44 + 34 + 5 + 7 + 3 + 8, dir.size_of_dir_including_subdirs());
+    // }
+
     #[test]
-    fn calc_size_of_subdirs() {
+    fn pass_on_size_of_subdirs() {
         let mut dir = Dir::make_empty_dir("root");
 
         dir.add_file("eins", 44);
@@ -121,6 +150,9 @@ mod tests {
         subsubdir.add_file("subsub_eins", 3);
         subsubdir.add_file("subsub_zwei", 8);
 
-        assert_eq!(44 + 34 + 5 + 7 + 3 + 8, dir.size_of_subdirs());
+        let mut size_count: HashMap<String, u32> = HashMap::new();
+
+        let total_size = dir.record_size_of_dir_including_subdirs(&mut size_count);
+        assert_eq!(44 + 34 + 5 + 7 + 3 + 8, total_size);
     }
 }
