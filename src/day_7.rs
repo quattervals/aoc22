@@ -42,12 +42,27 @@ fn looper(file_name: &str) {
         }
     }
 
-    let sum_0: usize = sizes
+    let sum: usize = sizes
         .iter()
         .map(|i| if *i.1 <= 100_000 { *i.1 } else { 0 })
         .sum();
 
-    println!("sum {}", sum_0);
+    println!("sum {}", sum);
+
+    const TOTAL_STORAGE: usize = 70_000_000;
+    const STORAGE_FOR_UPDATE: usize = 30_000_000;
+    let used_size = sizes.get(&PathBuf::from("/")).unwrap().clone();
+
+    let minimal_size_to_delete = used_size + STORAGE_FOR_UPDATE - TOTAL_STORAGE;
+
+    let candidate_dir_sizes: Vec<usize> = sizes
+        .values()
+        .cloned()
+        .filter(|v| *v >= minimal_size_to_delete as usize)
+        .collect();
+
+    let min_dir_size = candidate_dir_sizes.iter().min().unwrap();
+    println!("min dir size {}", min_dir_size);
 }
 
 #[cfg(test)]
