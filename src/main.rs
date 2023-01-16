@@ -1,8 +1,8 @@
-mod day_7;
+mod day_8;
 mod utils;
 
 
 fn main() {
 
-    day_7::day_7_greeter();
+    day_8::runner();
 }
