@@ -8,7 +8,7 @@ pub fn runner() {
     looper("./inputs/8_hot.txt");
 }
 
-fn looper(file_name: &str) {
+fn looper(file_name: &str) -> u32 {
     let f = BufReader::new(File::open(file_name).unwrap());
     let dim = f.lines().count();
     let mut flat_forrest: Vec<u32> = Vec::with_capacity(dim * dim);
@@ -28,12 +28,18 @@ fn looper(file_name: &str) {
     let forrest = Array::from_shape_vec((dim, dim), flat_forrest).unwrap();
     println!(
         "Number of visible trees {}",
-        count_visible_trees_in_forrest(forrest)
+        count_visible_trees_in_forrest(&forrest)
     );
+
+    println!(
+        "Max Scoring Tree has score {}",
+        highest_tree_view_score(&forrest)
+    );
+    return highest_tree_view_score(&forrest);
 }
 
 fn count_visible_trees_in_forrest(
-    forrest: ArrayBase<ndarray::OwnedRepr<u32>, Dim<[usize; 2]>>,
+    forrest: &ArrayBase<ndarray::OwnedRepr<u32>, Dim<[usize; 2]>>,
 ) -> u32 {
     let dim = forrest.dim().0;
     let mut count_visible_trees = 0;
@@ -68,6 +74,54 @@ fn count_visible_trees_in_forrest(
 
     count_visible_trees += 4 * dim as u32 - 4;
     return count_visible_trees;
+}
+
+fn highest_tree_view_score(forrest: &ArrayBase<ndarray::OwnedRepr<u32>, Dim<[usize; 2]>>) -> u32 {
+    let dim = forrest.dim().0;
+    let mut view_score: Vec<u32> = Vec::new();
+
+    for row in 1..dim - 1 {
+        for col in 1..dim - 1 {
+            let max = &forrest[(row, col)];
+
+            let mut north_count = 0;
+            for i in forrest.slice(s![..row, col]).iter().rev() {
+                north_count += 1;
+                if i >= max {
+                    break;
+                }
+            }
+
+            let mut west_count = 0;
+            for i in forrest.slice(s![row, ..col]).iter().rev() {
+                west_count += 1;
+                if i >= max {
+                    break;
+                }
+            }
+
+            let mut east_count = 0;
+            for i in forrest.slice(s![row, col + 1..]).iter() {
+                east_count += 1;
+                if i >= max {
+                    break;
+                }
+            }
+
+            let mut south_count = 0;
+            for i in forrest.slice(s![row + 1.., col]).iter() {
+                south_count += 1;
+                if i >= max {
+                    break;
+                }
+            }
+            let count_of_tree = north_count * west_count * east_count * south_count;
+
+            view_score.push(count_of_tree as u32);
+        }
+    }
+
+    return *view_score.iter().max().unwrap();
 }
 
 #[cfg(test)]
@@ -127,7 +181,6 @@ mod tests {
             false,
             forrest.slice(s![row + 1.., col]).iter().max().unwrap() < &forrest[(row, col)]
         );
-
     }
 
     #[test]
@@ -138,6 +191,24 @@ mod tests {
         ];
 
         let forrest = Array::from_shape_vec((dim, dim), flat_forrest).unwrap();
-        assert_eq!(21, count_visible_trees_in_forrest(forrest));
+        assert_eq!(21, count_visible_trees_in_forrest(&forrest));
+    }
+
+    #[test]
+    fn tree_view_score_test() {
+        let dim = 5;
+        let flat_forrest: Vec<u32> = vec![
+            3, 0, 3, 7, 3, 2, 5, 5, 1, 2, 6, 5, 3, 3, 2, 3, 3, 5, 4, 9, 3, 5, 3, 9, 0,
+        ];
+
+        let forrest = Array::from_shape_vec((dim, dim), flat_forrest).unwrap();
+
+        highest_tree_view_score(&forrest);
+        assert_eq!(8, highest_tree_view_score(&forrest));
+    }
+
+    #[test]
+    fn live_test() {
+        assert_eq!(444528, looper("./inputs/8_hot.txt"));
     }
 }
