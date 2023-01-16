@@ -18,7 +18,6 @@ fn looper(file_name: &str) {
                     if !(1..marker_hypothesis.len())
                         .any(|i| marker_hypothesis[i..].contains(&marker_hypothesis[i - 1]))
                     {
-
                         println!("end marker is {}", n + marker_len);
                         break;
                     }
@@ -27,4 +26,3 @@ fn looper(file_name: &str) {
         }
     }
 }
-
