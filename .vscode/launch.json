@@ -32,7 +32,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug unit tests - brittle file path",
-            "program": "target/debug/deps/aoc_22-1e7705464974cff1",
+            "program": "target/debug/deps/aoc_22-a371e352d5eaaa27",
             "args": [],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Rust: test build",
