@@ -16,7 +16,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests'",
+            "name": "Debug unit tests",
             "cargo": {
                 "args": [
                     "test",
@@ -27,6 +27,15 @@
                     // "--test-threads=1", // here I've added the arguments
                 ]
             }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests - brittle file path",
+            "program": "target/debug/deps/aoc_22-1e7705464974cff1",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Rust: test build",
         }
     ]
 }

@@ -82,42 +82,29 @@ fn highest_tree_view_score(forrest: &ArrayBase<ndarray::OwnedRepr<u32>, Dim<[usi
 
     for row in 1..dim - 1 {
         for col in 1..dim - 1 {
+            let slices = vec![
+                s![..row;-1, col],
+                s![row, ..col;-1],
+                s![row, col + 1..],
+                s![row + 1.., col],
+            ];
+
             let max = &forrest[(row, col)];
 
-            let mut north_count = 0;
-            for i in forrest.slice(s![..row, col]).iter().rev() {
-                north_count += 1;
-                if i >= max {
-                    break;
+            let mut score_of_tree = 1;
+            for slice in slices {
+                let mut count_per_tree = 0;
+                for tree in forrest.slice(slice).iter() {
+                    count_per_tree += 1;
+                    if *tree >= *max {
+                        break;
+                    }
                 }
+
+                score_of_tree *= count_per_tree;
             }
 
-            let mut west_count = 0;
-            for i in forrest.slice(s![row, ..col]).iter().rev() {
-                west_count += 1;
-                if i >= max {
-                    break;
-                }
-            }
-
-            let mut east_count = 0;
-            for i in forrest.slice(s![row, col + 1..]).iter() {
-                east_count += 1;
-                if i >= max {
-                    break;
-                }
-            }
-
-            let mut south_count = 0;
-            for i in forrest.slice(s![row + 1.., col]).iter() {
-                south_count += 1;
-                if i >= max {
-                    break;
-                }
-            }
-            let count_of_tree = north_count * west_count * east_count * south_count;
-
-            view_score.push(count_of_tree as u32);
+            view_score.push(score_of_tree as u32);
         }
     }
 
@@ -163,6 +150,13 @@ mod tests {
 
         //west_to_pos
         assert_eq!(array![6, 5, 3], forrest.slice(s![row, ..col]));
+        assert_eq!(
+            false,
+            forrest.slice(s![row, ..col]).iter().max().unwrap() < &forrest[(row, col)]
+        );
+
+        //pos_to_west
+        assert_eq!(array![3, 5, 6], forrest.slice(s![row, ..col;-1]));
         assert_eq!(
             false,
             forrest.slice(s![row, ..col]).iter().max().unwrap() < &forrest[(row, col)]
