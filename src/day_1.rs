@@ -3,7 +3,7 @@
 pub fn day_1_greeter() {
     println! {"Day 1"};
 
-    read_elves_calories("./calories_example.txt");
+    read_elves_calories("./inputs/calories_example.txt");
 }
 
 fn read_elves_calories(file_name: &str) {
