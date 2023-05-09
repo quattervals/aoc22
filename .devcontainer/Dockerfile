@@ -11,7 +11,8 @@ apt-get upgrade -y; \
 apt-get -y install --fix-missing \
 git \
 nano \
-fish
+fish \
+meld
 
 
 # Create non-root user
